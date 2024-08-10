@@ -8,12 +8,11 @@ class Field:
         return str(self.value)
 
 class Name(Field):
-    def __init__(self, value):
-        super().__init__(value)
+    pass
 
 class Phone(Field):
     def __init__(self, value):
-        if len(value) != 10:
+        if len(value) != 10 or not value.isdigit():
             raise ValueError("Phone number must consist of at least 10 characters")
         super().__init__(value)
 class Record:
@@ -25,10 +24,19 @@ class Record:
         phone = Phone(phone_value)
         self.phones.append(phone)
 
-    def remove_phone(self, phone):
-        self.phones.remove(phone)
+    def remove_phone(self, phone_value):
+        phone_to_remove = None
+        for phone in self.phones:
+            if phone.value == phone_value:
+                phone_to_remove = phone
+                break
+        if phone_to_remove:
+            self.phones.remove(phone_to_remove)
 
     def edit_phone(self, old_phone, new_phone):
+        if not old_phone.isdigit() or len(old_phone) != 10 or not new_phone.isdigit() or len(new_phone) != 10:
+            raise ValueError("Phone numbers must consist of exactly 10 digits")
+
         for i, phone in enumerate(self.phones):
             if phone.value == old_phone:
                 self.phones[i] = Phone(new_phone)
@@ -50,10 +58,7 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record
 
     def find(self, name):
-        if name in self.data:
-            return self.data[name]
-        else:
-            return None
+        return self.data.get(name)
 
     def delete(self, name):
         if name in self.data:
