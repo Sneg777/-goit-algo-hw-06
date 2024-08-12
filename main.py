@@ -34,14 +34,12 @@ class Record:
             self.phones.remove(phone_to_remove)
 
     def edit_phone(self, old_phone, new_phone):
-        if not old_phone.isdigit() or len(old_phone) != 10 or not new_phone.isdigit() or len(new_phone) != 10:
-            raise ValueError("Phone numbers must consist of exactly 10 digits")
-
         for i, phone in enumerate(self.phones):
             if phone.value == old_phone:
                 self.phones[i] = Phone(new_phone)
-                return True
-        return False
+                break
+        else:
+            raise ValueError("Old phone number not found")
 
     def find_phone(self, phone_number):
         for phone in self.phones:
